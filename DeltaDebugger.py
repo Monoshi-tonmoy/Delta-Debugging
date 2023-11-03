@@ -66,8 +66,6 @@ def run_java():
         return 1
 
 
-
-
 def testing(changes):
     global total_line_changes
     global diff
@@ -106,25 +104,22 @@ def testing(changes):
     
 
 
-def dd(changes):
+def dd(changes, r):
     if len(changes) == 1:
         return [changes[0]]
 
     split_point = len(changes) // 2
     c1, c2 = changes[:split_point], changes[split_point:]
+    
 
-    testing(changes)
-    '''if testing(diff, c1):
-        pass
-        return dd(c2)
-    elif testing(diff, c2):
-        pass
-        return dd(diff,c1,total_line_changes)
+    if testing(c1, r) == 0:
+        return dd(c1, r)
+    elif testing(c2, r) == 0:
+        return dd(c2, r)
     else:
-        # If both subsets fail, try interference by merging results
-        result1 = dd(diff,c1 + c2,total_line_changes)
-        result2 = dd(diff, c2 + c1, total_line_changes)
-        return result1 + result2'''
+        result1 = dd(c1, c2 + r)
+        result2 = dd(c2, c1 + r)
+        return result1 + result2
 
 def line_changes(diff, changes):
     global total_line_changes
@@ -139,7 +134,7 @@ def main():
     Baseline, Configured= read_code_files()
     diff, changes=difference(Baseline, Configured)
     total_line_changes=line_changes(diff, changes)
-    dd(changes)
+    dd(changes,changes[0])
     #print(changes)
 
 if __name__ == "__main__":
