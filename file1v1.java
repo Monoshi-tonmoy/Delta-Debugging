@@ -4,77 +4,33 @@ public class file1v1 {
 
     public int fun(int a, int b, String type) {
 
-        if (type.equals("summation")) {
-
-            System.out.println(a+b);
-
-            return a + b;
-
-        }
-
-        if (type.equals("multiplication")) {
-
-            return a * b;
-
-        }
+        if (type.equals("summation")) {return a + b;}
 
 
 
-        int ax = 0;
+        int y;
 
-        if (type.equals("minus")) {
+        if (type.equals("minus")) {return a - b;}
 
-            a++;
 
-            a--;
 
-            return a - b;
+        if (type.equals("modulous")) {a--; a++; return a % b;}
 
-        }
 
-        if (type.equals("modulous")) {
-
-            return a % b;
-
-        }
-
-        int by = 0;
-
-        if (type.equals("addsquare")) {
-
-            return (a * a + b * b);
-
-        }
 
         int bcbc = 1;
 
 
 
-        if (type.equals("division")) {
-
-            return a / b;
-
-        }
+        if (type.equals("subsquare")) {return (a * a - b * b);}
 
 
 
-        if (type.equals("subsquare")) {
-
-            return (a * a - b * b);
-
-        }
+        int v = 0;
 
 
 
-        if (type.equals("addsubsquare")) {
-
-            return (((a + b) * (a * b)) - ((a - b) * (a - b)));
-
-        }
-
-
-
-        return 1;
+        return 0;
 
     }
 
@@ -87,5 +43,3 @@ public class file1v1 {
     }
 
 }
-
-
