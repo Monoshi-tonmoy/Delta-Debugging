@@ -18,8 +18,6 @@ public class file1v1 {
 
 
 
-        int bcbc = 1;
-
 
 
         if (type.equals("subsquare")) {return (a * a - b * b);}
@@ -32,6 +30,10 @@ public class file1v1 {
 
         return 0;
 
+
+
+        
+
     }
 
 
@@ -42,4 +44,4 @@ public class file1v1 {
 
     }
 
-}
+

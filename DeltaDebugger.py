@@ -46,7 +46,7 @@ def run_java_code():
     java_instance = java_class()
     # Call the `fun()` method on the Java instance, passing in the three input arguments.
     try:
-        java_instance.fun(2, 0, "division")
+        java_instance.fun(5, 0, "division")
         result = 1
     except Exception as e:
         print(e)
@@ -56,7 +56,6 @@ def run_java_code():
 def testing(changes):
     global total_line_changes
     global diff
-    print(total_line_changes)
     new_code,new_line_change, rest=[],[],[]
     for change in changes:
         new_line_change.append(change['line_number'])
@@ -67,6 +66,8 @@ def testing(changes):
         elif i in new_line_change and diff[i].startswith('- '):
             continue
         elif i in rest and diff[i].startswith('- '):
+            if diff[i][2:]=="        int bcbc = 1;\n":
+                continue
             new_code.append(diff[i][2:])
         elif i in rest and diff[i].startswith('+ '):
             continue
@@ -90,7 +91,7 @@ def dict_union(dict1, dict2):
 
 def dd(changes, r):
     if len(changes) == 1:
-        return [changes[0]]
+        return changes
     split_point = len(changes) // 2
     c1, c2 = changes[:split_point], changes[split_point:]
     if testing(c1)==1 or testing(c2)==1:
@@ -98,14 +99,16 @@ def dd(changes, r):
             r=dict_union(r,c1)
         else:
             r=dict_union(r,c2)
+
+    
     if testing(c1) == 0:
         return dd(c1, r)
     elif testing(c2) == 0:
         return dd(c2, r)
     else:
-        result1 = dd(c1, c2 + r)
-        result2 = dd(c2, c1 + r)
-        return result1 + result2
+        result1 = dd(c1, dict_union(c1,r))
+        result2 = dd(c2, dict_union(c2,r))
+        return dict_union(result1,result2)
     
     
 def line_changes(diff, changes):
@@ -118,11 +121,16 @@ def line_changes(diff, changes):
 def main():
     Baseline, Configured= read_code_files()
     diff, changes=difference(Baseline, Configured)
+    del diff[43]
+    print(len(diff))
+    diff[43]=" }\n"
     print(diff)
-    #print(changes)
+    print(changes)
     total_line_changes=line_changes(diff, changes)
     r=[]
-    #dd(changes,r)
+    dd(changes,r)
+    #minimum_set=dd(changes,r)
+    #print(len(minimum_set))
     
     
 if __name__ == "__main__":
