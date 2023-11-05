@@ -5,6 +5,35 @@ import jpype
 total_line_changes=[]
 diff=[]
 
+
+def modify_file(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            lines = file.readlines()
+
+        with open(file_name, 'w') as file:
+            modified = False
+            for line in lines:
+                if not modified and line.__contains__("public static void main"):
+                    file.write("public static void main(String[] args) {\n\n    new file1v1().fun(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2]);\n\n}\n\n}\n")
+                    modified = True
+                elif modified:
+                    # Skip writing the rest of the file after the modification
+                    break
+                else:
+                    file.write(line)
+
+        if modified:
+            print("Modification successful!")
+        else:
+            print("Line not found in the file.")
+
+    except FileNotFoundError:
+        print("File not found!")
+    except IOError:
+        print("Error reading/writing the file.")
+        
+
 def read_code_files():
     with open("Baseline.txt", 'r', encoding='utf-8') as file:
         Baseline = file.readlines()
@@ -17,6 +46,9 @@ def difference(Baseline, Configured):
     differ = difflib.Differ()
     diff = list(differ.compare(Baseline, Configured))
     changes = []
+    #del diff[43]
+    #diff[43]="  }\n"
+    
     for line,i in zip(diff,range(len(diff))):
         code = line[2:]
         if line.startswith(' '):
@@ -78,6 +110,7 @@ def testing(changes):
     modified_code = '\n'.join(new_code)
     with open("file1v1.java",'w',encoding='utf-8') as file:
         file.write(modified_code)
+    modify_file("file1v1.java")
     test_output=run_java_code()
     return test_output
 
@@ -91,19 +124,21 @@ def dict_union(dict1, dict2):
 
 def dd(changes, r):
     if len(changes) == 1:
-        return changes
+        return [changes[0]]
     split_point = len(changes) // 2
     c1, c2 = changes[:split_point], changes[split_point:]
-    if testing(c1)==1 or testing(c2)==1:
-        if testing(c1):
-            r=dict_union(r,c1)
-        else:
-            r=dict_union(r,c2)
-
     
+    #print(c2)
+    #testing(c2)
+    if testing(c1)==1:
+        r=dict_union(r,c1)
+    elif testing(c2)==1:
+        r=dict_union(r,c2)
+
     if testing(c1) == 0:
         return dd(c1, r)
     elif testing(c2) == 0:
+        print("hello")
         return dd(c2, r)
     else:
         result1 = dd(c1, dict_union(c1,r))
@@ -121,16 +156,20 @@ def line_changes(diff, changes):
 def main():
     Baseline, Configured= read_code_files()
     diff, changes=difference(Baseline, Configured)
+    
+    #print(diff)
+    '''print(diff)
     del diff[43]
-    print(len(diff))
-    diff[43]=" }\n"
+    #print(len(diff))
+    diff[43]="  }\n"
     print(diff)
-    print(changes)
+    print(changes)'''
     total_line_changes=line_changes(diff, changes)
     r=[]
-    dd(changes,r)
-    #minimum_set=dd(changes,r)
-    #print(len(minimum_set))
+    #dd(changes,r)
+    minimum_set=dd(changes,r)
+    print(len(minimum_set))
+    print(minimum_set)
     
     
 if __name__ == "__main__":
